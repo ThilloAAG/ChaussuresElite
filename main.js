@@ -7,23 +7,23 @@ function updateCartCount() {
 }
 
 // Charger les produits vedettes
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     
-    if (document.getElementById('featured-products-grid')) {
-        fetch('data/products.json')
-            .then(response => response.json())
-            .then(products => {
-                const featured = products.filter(p => p.featured);
-                const container = document.getElementById('featured-products-grid');
-                
-                featured.forEach(product => {
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    productCard.innerHTML = `
+    const productsGrid = document.getElementById('featured-products-grid');
+    if (!productsGrid) return;
+
+    fetch('products.json')
+        .then(response => response.json())
+        .then(products => {
+            const featured = products.filter(p => p.featured);
+            
+            featured.forEach(product => {
+                productsGrid.innerHTML += `
+                    <div class="product-card">
                         <a href="product-detail.html?id=${product.id}">
                             <div class="product-image">
-                                <img src="images/${product.image}" alt="${product.name}">
+                                <img src="${product.image}" alt="${product.name}">
                             </div>
                             <div class="product-info">
                                 <h3>${product.name}</h3>
@@ -31,36 +31,26 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <button class="btn add-to-cart" data-id="${product.id}">Ajouter au panier</button>
                             </div>
                         </a>
-                    `;
-                    container.appendChild(productCard);
-                });
-                
-                // Gestion des clics sur "Ajouter au panier"
-                document.querySelectorAll('.add-to-cart').forEach(button => {
-                    button.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const productId = parseInt(this.getAttribute('data-id'));
-                        const product = products.find(p => p.id === productId);
-                        
-                        const existingItem = cart.find(item => item.id === productId);
-                        if (existingItem) {
-                            existingItem.quantity += 1;
-                        } else {
-                            cart.push({
-                                id: product.id,
-                                name: product.name,
-                                price: product.price,
-                                image: product.image,
-                                quantity: 1
-                            });
-                        }
-                        
-                        localStorage.setItem('cart', JSON.stringify(cart));
-                        updateCartCount();
-                        
-                        alert(`${product.name} a été ajouté à votre panier!`);
-                    });
-                });
+                    </div>
+                `;
             });
-    }
+
+            // Gestion des clics sur "Ajouter au panier"
+            productsGrid.addEventListener('click', e => {
+                if (!e.target.classList.contains('add-to-cart')) return;
+                e.preventDefault();
+                
+                const productId = parseInt(e.target.dataset.id);
+                const product = products.find(p => p.id === productId);
+                
+                const existingItem = cart.find(item => item.id === productId);
+                existingItem 
+                    ? existingItem.quantity++ 
+                    : cart.push({...product, quantity: 1});
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                alert(`${product.name} ajouté au panier !`);
+            });
+        });
 });
