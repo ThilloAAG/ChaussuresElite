@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
             itemEl.classList.add('cart-item');
             itemEl.innerHTML = `
                 <div class="item-image">
-                    <img src="images/${item.image}" alt="${item.name}">
+                    <img src="${item.image}" alt="${item.name}">
                 </div>
                 <div class="item-details">
                     <h4>${item.name}</h4>
