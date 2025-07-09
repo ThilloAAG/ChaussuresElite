@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "name": "Cream New Balance",
+        "price": 79.99,
+        "image": "ChaussureH1.png",
+        "category": "homme",
+        "featured": true
+    },
+    {
+        "id": 2,
+        "name": "Chaussures de Ville ",
+        "price": 89.99,
+        "image": "ChaussureH2.png",
+        "category": "homme",
+        "featured": true
+    },
+    {
+        "id": 3,
+        "name": "Baskets Confort Premium",
+        "price": 99.99,
+        "image": "ChaussureH3.png",
+        "category": "homme",
+        "featured": false
+    },
+    {
+        "id": 4,
+        "name": "Converse",
+        "price": 69.99,
+        "image": "ChaussureF1.png",
+        "category": "femme",
+        "featured": true
+    },
+    {
+        "id": 5,
+        "name": "Red Converse",
+        "price": 49.99,
+        "image": "ChaussureF2.png",
+        "category": "femme",
+        "featured": false
+    },
+    {
+        "id": 6,
+        "name": "Cream Converse",
+        "price": 89.99,
+        "image": "ChaussureF3.png",
+        "category": "femme",
+        "featured": true
+    },
+    {
+        "id": 7,
+        "name": "Baskets Enfant ",
+        "price": 39.99,
+        "image": "ChaussureE1.png",
+        "category": "enfant",
+        "featured": false
+    },
+    {
+        "id": 8,
+        "name": "Mini Adidas",
+        "price": 29.99,
+        "image": "ChaussureE2.png",
+        "category": "enfant",
+        "featured": false
+    },
+    {
+        "id": 9,
+        "name": "Mini Puma",
+        "price": 49.99,
+        "image": "ChaussureE3.png",
+        "category": "enfant",
+        "featured": true
+    }
+]

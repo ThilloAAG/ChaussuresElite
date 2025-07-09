@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation - SoleStep</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Chaussures Élite</h1>
+            <nav>
+                <a href="index.html">Accueil</a>
+                <a href="panier.html">Panier (<span id="cart-count">0</span>)</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="checkout-process">
+        <div class="container">
+            <div class="checkout-steps">
+                <div class="step completed">1. Panier</div>
+                <div class="step completed">2. Information</div>
+                <div class="step completed">3. Paiement</div>
+                <div class="step active">4. Confirmation</div>
+            </div>
+            
+            <div class="confirmation-container">
+                <div class="confirmation-message">
+                    <h1>Merci pour votre commande!</h1>
+                    <p>Votre commande #<span id="order-number">12345</span> a été confirmée.</p>
+                    <p>Nous avons envoyé un email de confirmation à <span id="customer-email">email@example.com</span>.</p>
+                    
+                    <div class="order-summary">
+                        <h3>Résumé de la commande</h3>
+                        <div id="order-summary">
+                            <!-- Détails chargés dynamiquement -->
+                        </div>
+                    </div>
+                    
+                    <a href="products.html" class="btn">Continuer vos achats</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Chaussures Élite. Tous droits réservés.</p>
+    </footer>
+
+    <script src="js/confirmation.js"></script>
+</body>
+</html>

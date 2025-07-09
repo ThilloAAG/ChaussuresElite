@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos chaussures - SoleStep</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/products.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Chaussures Élite</h1>
+            <nav>
+                <a href="index.html">Accueil</a>
+                <a href="panier.html">Panier (<span id="cart-count">0</span>)</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="products-page">
+        <div class="container">
+            <h1>Nos chaussures</h1>
+            
+            <div class="products-container">
+                <aside class="filters">
+                    <h2>Filtrer</h2>
+                    
+                    <div class="filter-group">
+                        <h3>Catégorie</h3>
+                        <label><input type="checkbox" name="category" value="homme"> Homme</label>
+                        <label><input type="checkbox" name="category" value="femme"> Femme</label>
+                        <label><input type="checkbox" name="category" value="enfant"> Enfant</label>
+                    </div>
+                    
+                    
+                    <div class="filter-group">
+                        <h3>Prix</h3>
+                        <div class="price-range">
+                            <span id="min-price">20€</span>
+                            <input type="range" id="price-slider" min="20" max="200" value="200">
+                            <span id="max-price">200€</span>
+                        </div>
+                    </div>
+                    
+                    <button id="apply-filters" class="btn">Appliquer</button>
+                    <button id="reset-filters" class="btn btn-secondary">Réinitialiser</button>
+                </aside>
+                
+                <section class="products-list">
+                    <div class="sort-options">
+                        <label for="sort">Trier par :</label>
+                        <select id="sort">
+                            <option value="price-asc">Prix croissant</option>
+                            <option value="price-desc">Prix décroissant</option>
+                            <option value="name-asc">Nom (A-Z)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="products-grid" id="all-products">
+                        <!-- Produits chargés dynamiquement -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Chaussures Élite. Tous droits réservés.</p>
+    </footer>
+
+    <script src="js/products.js"></script>
+</body>
+</html>

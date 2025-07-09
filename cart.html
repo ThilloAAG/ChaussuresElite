@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panier - Chaussures Élite</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Chaussures Élite</h1>
+      <nav>
+        <a href="index.html">Accueil</a>
+        <a href="cart.html">Panier (<span id="cart-count">0</span>)</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="checkout-process">
+    <div class="container">
+      <!-- Étapes du processus de commande -->
+      <div class="checkout-steps">
+        <div class="step active">1. Panier</div>
+        <div class="step">2. Information</div>
+        <div class="step">3. Paiement</div>
+        <div class="step">4. Confirmation</div>
+      </div>
+
+      <h2>Votre panier</h2>
+
+      <div class="cart-container">
+        <!-- Liste des articles -->
+        <div class="cart-items" id="cart-items">
+          <!-- Les articles seront injectés par cart.js -->
+          <p class="empty-cart">Votre panier est vide</p>
+        </div>
+
+        <!-- Résumé de commande -->
+        <div class="cart-summary">
+          <h3>Résumé de la commande</h3>
+          <div class="summary-details">
+            <p>Sous-total : <span id="subtotal">0€</span></p>
+            <p>Livraison : <span id="shipping">Gratuite</span></p>
+            <p class="total">Total : <span id="total">0€</span></p>
+          </div>
+          <a href="checkout.html" class="btn" id="checkout-btn">Passer la commande</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Chaussures Élite. Tous droits réservés.</p>
+    </div>
+  </footer>
+
+  <!-- Script de gestion du panier -->
+  <script src="js/cart.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaussures Élite</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+    <div class="container">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Logo Chaussures Élite" class="logo">
+            <h1>Chaussures Élite</h1>
+        </div>
+        <nav>
+            <a href="index.html">Accueil</a>
+            <a href="products.html">Produits</a>
+            <a href="cart.html">Panier (<span id="cart-count">0</span>)</a>
+        </nav>
+    </div>
+</header>
+
+    <main class="container">
+        <section class="hero" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('images/ChaussureH1.png');">
+    <h2>Découvrez notre nouvelle collection</h2>
+    <p>Des chaussures élégantes et confortables pour toutes les occasions</p>
+    <a href="products.html" class="btn">Voir les produits</a>
+</section>
+
+        <section id="featured-products">
+            <h2>Produits vedettes</h2>
+            <div class="products-grid" id="featured-products-grid">
+                <!-- Produits chargés dynamiquement -->
+            </div>
+        </section>
+
+        <section id="survey-container" class="survey">
+            <h2>Êtes-vous satisfait de notre sélection ?</h2>
+            <form id="survey-form">
+                <label>
+                    <input type="radio" name="response" value="oui"> Oui
+                </label><br>
+                <label>
+                    <input type="radio" name="response" value="non"> Non
+                </label><br>
+                <button type="submit" class="btn">Voter</button>
+            </form>
+            <div id="survey-results" style="display: none;"></div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Chaussures Élite. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/survey.js"></script>
+</body>
+</html>

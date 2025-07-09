@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - SoleStep</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Chaussures Élite</h1>
+            <nav>
+                <a href="index.html">Accueil</a>
+                <a href="panier.html">Panier (<span id="cart-count">0</span>)</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="checkout-process">
+        <div class="container">
+            <div class="checkout-steps">
+                <div class="step completed">1. Panier</div>
+                <div class="step active">2. Information</div>
+                <div class="step">3. Paiement</div>
+                <div class="step">4. Confirmation</div>
+            </div>
+            
+            <h1>Informations de livraison</h1>
+            
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label for="first-name">Prénom</label>
+                    <input type="text" id="first-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="last-name">Nom</label>
+                    <input type="text" id="last-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Adresse</label>
+                    <input type="text" id="address" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">Ville</label>
+                        <input type="text" id="city" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="zip-code">Code postal</label>
+                        <input type="text" id="zip-code" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Téléphone</label>
+                    <input type="tel" id="phone">
+                </div>
+                
+                <h2>Méthode de paiement</h2>
+                
+                <div class="payment-methods">
+                    <div class="payment-method">
+                        <input type="radio" id="credit-card" name="payment" value="credit-card" checked>
+                        <label for="credit-card">Carte de crédit</label>
+                    </div>
+                    
+                    <div class="payment-method">
+                        <input type="radio" id="paypal" name="payment" value="paypal">
+                        <label for="paypal">PayPal</label>
+                    </div>
+                </div>
+                
+                <div class="credit-card-info" id="credit-card-info">
+                    <div class="form-group">
+                        <label for="card-number">Numéro de carte</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry-date">Date d'expiration</label>
+                            <input type="text" id="expiry-date" placeholder="MM/AA">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="123">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <a href="cart.html" class="btn btn-secondary">Retour au panier</a>
+                    <button type="submit" class="btn">Payer maintenant</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Chaussures Élite. Tous droits réservés.</p>
+    </footer>
+
+    <script src="js/checkout.js"></script>
+</body>
+</html>
