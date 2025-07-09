@@ -1,18 +1,12 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const productsContainer = document.getElementById('all-products');
-    const applyFiltersBtn = document.getElementById('apply-filters');
-    const resetFiltersBtn = document.getElementById('reset-filters');
-    const sortSelect = document.getElementById('sort');
     const priceSlider = document.getElementById('price-slider');
-    const minPriceDisplay = document.getElementById('min-price');
     const maxPriceDisplay = document.getElementById('max-price');
-
-    let allProducts = [];
-    let filteredProducts = [];
+    let allProducts = [], filteredProducts = [];
 
     // Charger les produits
-    fetch('data/products.json')
-        .then(response => response.json())
+    fetch('products.json')
+        .then(res => res.json())
         .then(products => {
             allProducts = products;
             filteredProducts = [...products];
@@ -20,127 +14,91 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Initialiser le slider de prix
             const prices = products.map(p => p.price);
-            const minPrice = Math.min(...prices);
-            const maxPrice = Math.max(...prices);
-
-            priceSlider.min = minPrice;
-            priceSlider.max = maxPrice;
-            priceSlider.value = maxPrice;
-
-            minPriceDisplay.textContent = `${minPrice}€`;
-            maxPriceDisplay.textContent = `${maxPrice}€`;
-
+            priceSlider.min = Math.min(...prices);
+            priceSlider.max = Math.max(...prices);
+            priceSlider.value = priceSlider.max;
+            maxPriceDisplay.textContent = `${priceSlider.value}€`;
+            
             priceSlider.addEventListener('input', () => {
                 maxPriceDisplay.textContent = `${priceSlider.value}€`;
             });
         });
 
     // Afficher les produits
-    function displayProducts(products) {
-        productsContainer.innerHTML = '';
+    const displayProducts = products => {
+        productsContainer.innerHTML = products.length ? 
+            products.map(product => `
+                <div class="product-card">
+                    <a href="product-detail.html?id=${product.id}">
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}">
+                        </div>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <div class="product-price">${product.price}€</div>
+                            <button class="btn add-to-cart" data-id="${product.id}">Ajouter au panier</button>
+                        </div>
+                    </a>
+                </div>
+            `).join('') : 
+            '<p class="no-results">Aucun produit ne correspond à vos critères.</p>';
 
-        if (products.length === 0) {
-            productsContainer.innerHTML = '<p class="no-results">Aucun produit ne correspond à vos critères.</p>';
-            return;
-        }
+        // Gestion des clics sur "Ajouter au panier" avec event delegation
+        productsContainer.addEventListener('click', e => {
+            if (!e.target.classList.contains('add-to-cart')) return;
+            e.preventDefault();
+            
+            const productId = parseInt(e.target.dataset.id);
+            const product = allProducts.find(p => p.id === productId);
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const item = cart.find(item => item.id === productId);
 
-        products.forEach(product => {
-            const productCard = document.createElement('div');
-            productCard.className = 'product-card';
-            productCard.innerHTML = `
-                <a href="product-detail.html?id=${product.id}">
-                    <div class="product-image">
-                        <img src="images/${product.image}" alt="${product.name}">
-                    </div>
-                    <div class="product-info">
-                        <h3>${product.name}</h3>
-                        <div class="product-price">${product.price}€</div>
-                        <button class="btn add-to-cart" data-id="${product.id}">Ajouter au panier</button>
-                    </div>
-                </a>
-            `;
-            productsContainer.appendChild(productCard);
+            item ? item.quantity++ : cart.push({...product, quantity: 1});
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount(cart);
+            alert(`${product.name} ajouté au panier.`);
         });
+    };
 
-        // Gestion des clics sur "Ajouter au panier"
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', function (e) {
-                e.preventDefault();
-                const productId = parseInt(this.getAttribute('data-id'));
-                const product = allProducts.find(p => p.id === productId);
-
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                const existingItem = cart.find(item => item.id === productId);
-
-                if (existingItem) {
-                    existingItem.quantity += 1;
-                } else {
-                    cart.push({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        image: product.image,
-                        quantity: 1
-                    });
-                }
-
-                localStorage.setItem('cart', JSON.stringify(cart));
-
-                // Mettre à jour le compteur du panier
-                const cartCountElements = document.querySelectorAll('#cart-count');
-                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-                cartCountElements.forEach(el => el.textContent = totalItems);
-
-                alert(`${product.name} a été ajouté au panier.`);
-            });
-        });
-    }
+    // Mettre à jour le compteur du panier
+    const updateCartCount = cart => {
+        const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.querySelectorAll('#cart-count').forEach(el => el.textContent = total);
+    };
 
     // Appliquer les filtres
-   
-applyFiltersBtn.addEventListener('click', function () {
-    const maxPrice = parseFloat(priceSlider.value);
-    const selectedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked'))
-                                  .map(checkbox => checkbox.value);
+    document.getElementById('apply-filters').addEventListener('click', () => {
+        const maxPrice = parseFloat(priceSlider.value);
+        const categories = [...document.querySelectorAll('input[name="category"]:checked')]
+                         .map(checkbox => checkbox.value);
 
-    filteredProducts = allProducts.filter(p => {
-        const priceMatch = p.price <= maxPrice;
-        const categoryMatch = selectedCategories.includes(p.category);
-        return priceMatch && categoryMatch;
+        filteredProducts = allProducts.filter(p => 
+            p.price <= maxPrice && (!categories.length || categories.includes(p.category))
+        );
+        applySort();
     });
-    
-    applySort();
-});
 
     // Réinitialiser les filtres
-    resetFiltersBtn.addEventListener('click', function () {
+    document.getElementById('reset-filters').addEventListener('click', () => {
         filteredProducts = [...allProducts];
-
-        const prices = allProducts.map(p => p.price);
-        const maxPrice = Math.max(...prices);
-        priceSlider.value = maxPrice;
-        maxPriceDisplay.textContent = `${maxPrice}€`;
-
-        sortSelect.value = 'default';
+        priceSlider.value = priceSlider.max;
+        maxPriceDisplay.textContent = `${priceSlider.value}€`;
+        document.getElementById('sort').value = 'default';
         displayProducts(filteredProducts);
     });
 
     // Trier les produits
-    sortSelect.addEventListener('change', applySort);
+    document.getElementById('sort').addEventListener('change', applySort);
 
-    function applySort() {
-        const sortValue = sortSelect.value;
-
-        if (sortValue === 'price-asc') {
-            filteredProducts.sort((a, b) => a.price - b.price);
-        } else if (sortValue === 'price-desc') {
-            filteredProducts.sort((a, b) => b.price - a.price);
-        } else if (sortValue === 'name-asc') {
-            filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
-        } else if (sortValue === 'name-desc') {
-            filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
-        }
-
+    const applySort = () => {
+        const sortValue = document.getElementById('sort').value;
+        const sorts = {
+            'price-asc': (a, b) => a.price - b.price,
+            'price-desc': (a, b) => b.price - a.price,
+            'name-asc': (a, b) => a.name.localeCompare(b.name),
+            'name-desc': (a, b) => b.name.localeCompare(a.name)
+        };
+        if (sorts[sortValue]) filteredProducts.sort(sorts[sortValue]);
         displayProducts(filteredProducts);
-    }
+    };
 });
