@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Initialiser le slider de prix
             const minPrice = 20; // Valeur minimale fixe (ou utiliser Math.min(...products.map(p => p.price)))
-            const maxPrice = 200; // Valeur maximale fixe
+            const maxPrice = 100; // Valeur maximale fixe
 
             priceSlider.min = minPrice;
             priceSlider.max = maxPrice;
