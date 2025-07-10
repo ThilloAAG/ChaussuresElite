@@ -1,104 +1,141 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
     const productsContainer = document.getElementById('all-products');
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    const resetFiltersBtn = document.getElementById('reset-filters');
+    const sortSelect = document.getElementById('sort');
     const priceSlider = document.getElementById('price-slider');
+    const minPriceDisplay = document.getElementById('min-price');
     const maxPriceDisplay = document.getElementById('max-price');
-    let allProducts = [], filteredProducts = [];
+
+    let allProducts = [];
+    let filteredProducts = [];
 
     // Charger les produits
     fetch('products.json')
-        .then(res => res.json())
+        .then(response => response.json())
         .then(products => {
             allProducts = products;
             filteredProducts = [...products];
             displayProducts(filteredProducts);
 
             // Initialiser le slider de prix
-            const prices = products.map(p => p.price);
-            priceSlider.min = Math.min(...prices);
-            priceSlider.max = Math.max(...prices);
-            priceSlider.value = priceSlider.max;
-            maxPriceDisplay.textContent = `${priceSlider.value}€`;
-            
+            const minPrice = 20; // Valeur minimale fixe (ou utiliser Math.min(...products.map(p => p.price)))
+            const maxPrice = 200; // Valeur maximale fixe
+
+            priceSlider.min = minPrice;
+            priceSlider.max = maxPrice;
+            priceSlider.value = maxPrice;
+
+            minPriceDisplay.textContent = `${minPrice}€`;
+            maxPriceDisplay.textContent = `${maxPrice}€`;
+
             priceSlider.addEventListener('input', () => {
                 maxPriceDisplay.textContent = `${priceSlider.value}€`;
             });
         });
 
     // Afficher les produits
-    const displayProducts = products => {
-        productsContainer.innerHTML = products.length ? 
-            products.map(product => `
-                <div class="product-card">
-                    <a href="product-detail.html?id=${product.id}">
-                        <div class="product-image">
-                            <img src="${product.image}" alt="${product.name}">
-                        </div>
-                        <div class="product-info">
-                            <h3>${product.name}</h3>
-                            <div class="product-price">${product.price}€</div>
-                            <button class="btn add-to-cart" data-id="${product.id}">Ajouter au panier</button>
-                        </div>
-                    </a>
-                </div>
-            `).join('') : 
-            '<p class="no-results">Aucun produit ne correspond à vos critères.</p>';
+    function displayProducts(products) {
+        productsContainer.innerHTML = '';
 
-        // Gestion des clics sur "Ajouter au panier" avec event delegation
-        productsContainer.addEventListener('click', e => {
-            if (!e.target.classList.contains('add-to-cart')) return;
-            e.preventDefault();
-            
-            const productId = parseInt(e.target.dataset.id);
-            const product = allProducts.find(p => p.id === productId);
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const item = cart.find(item => item.id === productId);
+        if (products.length === 0) {
+            productsContainer.innerHTML = '<p class="no-results">Aucun produit trouvé.</p>';
+            return;
+        }
 
-            item ? item.quantity++ : cart.push({...product, quantity: 1});
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount(cart);
-            alert(`${product.name} ajouté au panier.`);
+        products.forEach(product => {
+            const productCard = document.createElement('div');
+            productCard.className = 'product-card';
+            productCard.innerHTML = `
+                <a href="product-detail.html?id=${product.id}">
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <div class="product-price">${product.price}€</div>
+                    <button class="btn add-to-cart" data-id="${product.id}">Ajouter au panier</button>
+                </a>
+            `;
+            productsContainer.appendChild(productCard);
         });
-    };
+
+        // Gestion du panier
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                addToCart(parseInt(this.getAttribute('data-id')));
+            });
+        });
+    }
+
+    // Ajouter au panier
+    function addToCart(productId) {
+        const product = allProducts.find(p => p.id === productId);
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const existingItem = cart.find(item => item.id === productId);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCounter();
+        alert(`${product.name} ajouté au panier !`);
+    }
 
     // Mettre à jour le compteur du panier
-    const updateCartCount = cart => {
-        const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-        document.querySelectorAll('#cart-count').forEach(el => el.textContent = total);
-    };
+    function updateCartCounter() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.querySelectorAll('#cart-count').forEach(el => el.textContent = totalItems);
+    }
 
     // Appliquer les filtres
-    document.getElementById('apply-filters').addEventListener('click', () => {
+    applyFiltersBtn.addEventListener('click', function () {
         const maxPrice = parseFloat(priceSlider.value);
-        const categories = [...document.querySelectorAll('input[name="category"]:checked')]
-                         .map(checkbox => checkbox.value);
+        const selectedCategories = Array.from(
+            document.querySelectorAll('input[name="category"]:checked')
+        ).map(checkbox => checkbox.value);
 
-        filteredProducts = allProducts.filter(p => 
-            p.price <= maxPrice && (!categories.length || categories.includes(p.category))
-        );
+        filteredProducts = allProducts.filter(product => {
+            const matchesPrice = product.price <= maxPrice;
+            const matchesCategory = selectedCategories.length === 0 || 
+                                  selectedCategories.includes(product.category);
+            return matchesPrice && matchesCategory;
+        });
+
         applySort();
     });
 
     // Réinitialiser les filtres
-    document.getElementById('reset-filters').addEventListener('click', () => {
-        filteredProducts = [...allProducts];
+    resetFiltersBtn.addEventListener('click', function () {
+        document.querySelectorAll('input[name="category"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
         priceSlider.value = priceSlider.max;
-        maxPriceDisplay.textContent = `${priceSlider.value}€`;
-        document.getElementById('sort').value = 'default';
+        maxPriceDisplay.textContent = `${priceSlider.max}€`;
+        filteredProducts = [...allProducts];
         displayProducts(filteredProducts);
     });
 
     // Trier les produits
-    document.getElementById('sort').addEventListener('change', applySort);
+    sortSelect.addEventListener('change', applySort);
 
-    const applySort = () => {
-        const sortValue = document.getElementById('sort').value;
-        const sorts = {
-            'price-asc': (a, b) => a.price - b.price,
-            'price-desc': (a, b) => b.price - a.price,
-            'name-asc': (a, b) => a.name.localeCompare(b.name),
-            'name-desc': (a, b) => b.name.localeCompare(a.name)
-        };
-        if (sorts[sortValue]) filteredProducts.sort(sorts[sortValue]);
+    function applySort() {
+        switch (sortSelect.value) {
+            case 'price-asc':
+                filteredProducts.sort((a, b) => a.price - b.price);
+                break;
+            case 'price-desc':
+                filteredProducts.sort((a, b) => b.price - a.price);
+                break;
+            case 'name-asc':
+                filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+        }
         displayProducts(filteredProducts);
-    };
+    }
+
+    // Initialiser le compteur du panier
+    updateCartCounter();
 });
